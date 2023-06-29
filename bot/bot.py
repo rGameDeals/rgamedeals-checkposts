@@ -74,12 +74,12 @@ def docheck():
   
       if submission.author is None:
         logging.info("check - reporting " + row[2])
-        #data = { "text": 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
-        #url = SLACK_HOOK
-        #r = requests.post(url, json=data)
+        data = { "text": 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
+        url = SLACK_HOOK
+        r = requests.post(url, json=data)
 
-        slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
-        slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+        #slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
+        #slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
 
 
         logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
@@ -112,12 +112,12 @@ def docheck_all(days):
             cursorObj.execute('SELECT count(*) from all_posts where reported = 1 and poster = %s',(row[5],))
             rowa = cursorObj.fetchall()
   
-            #data = { "text": '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]  }
-            slack_message = '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5] 
+            data = { "text": '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]  }
+            #slack_message = '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5] 
             #data = { "text": '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
             url = SLACK_HOOK
-            #r = requests.post(url, json=data)
-            slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+            r = requests.post(url, json=data)
+            #slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
 
             logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
@@ -159,9 +159,11 @@ schedule.every(6).hours.do(docheck)
 schedule.every(24).hours.do(docheck_all,120)
 #schedule.every(7).days.do(docheck_all,120)
 
+url = SLACK_HOOK
+data = { "text": 'bot started' }
+r = requests.post(url, json=data)
 docheck_all(30)
 
-slack_client.api_call("chat.postMessage", channel='#mod-bots',  text='bot started')
 while 1:
     schedule.run_pending()
     time.sleep(30)

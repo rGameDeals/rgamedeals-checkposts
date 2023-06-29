@@ -75,7 +75,8 @@ def docheck():
       if submission.author is None:
         logging.info("check - reporting " + row[2])
         #data = { "text": 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
-        r = requests.post(url, json=data)
+        #url = SLACK_HOOK
+        #r = requests.post(url, json=data)
 
         slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
         slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)

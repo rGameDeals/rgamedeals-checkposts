@@ -40,8 +40,6 @@ slack_client = WebClient(os.environ.get('SLACK_API'))
 
 starterbot_id = slack_client.api_call("auth.test")["user_id"]
 
-
-
 apppath='/app/config/'
 
 logging.basicConfig(level=logging.INFO,

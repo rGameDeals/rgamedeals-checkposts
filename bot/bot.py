@@ -64,6 +64,7 @@ def docheck():
   print( len(rows) )
   counter=0
   for row in rows:
+   try:
     counter+=1
     #logging.info( "checking " + row[2] )
     if row[4] == 0:
@@ -71,7 +72,6 @@ def docheck():
       if row[5] == None:
         cursorObj.execute('UPDATE rep_posts SET poster = %s WHERE postid = %s', ( submission.author.name , row[2] ) )
         con.commit()
-  
       if submission.author is None:
         logging.info("check - reporting " + row[2])
         data = { "text": 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
@@ -85,6 +85,10 @@ def docheck():
         logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
         cursorObj.execute('UPDATE rep_posts SET reported = 1 WHERE postid = "' + row[2] + '"')
         con.commit()
+    time.sleep(1)
+   except:
+    logging.info("error in check")
+    time.sleep(1)
   logging.info("done check on reps")
 
 def docheck_all(days):
@@ -95,6 +99,7 @@ def docheck_all(days):
   print( len(rows) )
   counter=0
   for row in rows:
+    time.sleep(1)
     counter+=1
     #logging.info( "checking " + row[2] )
 

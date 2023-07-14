@@ -27,7 +27,7 @@ REDDIT_SUBREDDIT= os.environ['REDDIT_SUBREDDIT']
 
 SLACK_HOOK= os.environ['SLACK_HOOK']
 
-AGENT="python:ReportBot:0.1 (by dgc1980)"
+AGENT="python:CheckPostsBot:0.1 (by dgc1980)"
 
 reddit = praw.Reddit(client_id=REDDIT_CID,
                      client_secret=REDDIT_SECRET,

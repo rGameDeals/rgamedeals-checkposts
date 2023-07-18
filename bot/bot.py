@@ -25,7 +25,7 @@ REDDIT_USER = os.environ['REDDIT_USER']
 REDDIT_PASS = os.environ['REDDIT_PASS']
 REDDIT_SUBREDDIT= os.environ['REDDIT_SUBREDDIT']
 
-#SLACK_HOOK= os.environ['SLACK_HOOK']
+SLACK_HOOK= os.environ['SLACK_HOOK']
 
 AGENT="python:CheckPostsBot:0.1 (by dgc1980)"
 

@@ -154,6 +154,7 @@ def docheck_1h():
           con.commit()
     except:
       print("error on https://redd.it/"+row[2])
+    time.sleep(1)
   logging.info("done small check")
 
 

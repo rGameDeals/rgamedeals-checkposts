@@ -116,12 +116,8 @@ def docheck_all(days):
             rowa = cursorObj.fetchall()
   
             data = { "text": '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]  }
-            #slack_message = '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5] 
-            #data = { "text": '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] }
             url = SLACK_HOOK
             r = requests.post(url, json=data)
-            #slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
-
             logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
   
@@ -139,7 +135,7 @@ def docheck_all(days):
 def docheck_1h():
   logging.info("running small check")
   con.ping(reconnect=True)
-  cursorObj.execute('SELECT * FROM all_posts WHERE  posttime >  ' +  str( int(time.time()) - (60*30)  ) + " AND reported = 0" )
+  cursorObj.execute('SELECT * FROM all_posts WHERE  posttime >  ' +  str( int(time.time()) - (60*60)  ) + " AND reported = 0" )
   rows = cursorObj.fetchall()
   counter=0
   for row in rows:
@@ -149,9 +145,13 @@ def docheck_1h():
      if row[4] == 0:
       submission = reddit.submission( row[2])
       if submission.author is None:
-          logging.info("check 1h - removing" + row[2])
-          cursorObj.execute('DELETE from all_posts WHERE postid = "' + row[2] + '"')
-          con.commit()
+           data = { "text": '(1hr) `all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]  }
+           url = SLACK_HOOK
+           r = requests.post(url, json=data)
+           logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
+
+           cursorObj.execute('UPDATE all_posts SET reported = 1 WHERE postid = %s', ( row[2]) )
+           con.commit()
     except:
       print("error on https://redd.it/"+row[2])
     time.sleep(1)

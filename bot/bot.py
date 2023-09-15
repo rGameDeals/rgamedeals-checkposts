@@ -160,7 +160,7 @@ def docheck_1h():
 
 schedule.every(10).minutes.do(docheck_1h)
 schedule.every(6).hours.do(docheck)
-#schedule.every(24).hours.do(docheck_all,120)
+schedule.every(24).hours.do(docheck_all,30)
 schedule.every(7).days.do(docheck_all,120)
 
 url = SLACK_HOOK

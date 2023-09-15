@@ -106,7 +106,7 @@ def docheck_all(days):
       submission = reddit.submission( row[2])
 
       if row[5] == None:
-        cursorObj.execute('UPDATE rep_posts SET poster = %s WHERE postid = %s', ( submission.author.name , row[2] ) )
+        cursorObj.execute('UPDATE all_posts SET poster = %s WHERE postid = %s', ( submission.author.name , row[2] ) )
         con.commit()
  
       if submission.author is None:
@@ -160,8 +160,8 @@ def docheck_1h():
 
 schedule.every(10).minutes.do(docheck_1h)
 schedule.every(6).hours.do(docheck)
-schedule.every(24).hours.do(docheck_all,120)
-#schedule.every(7).days.do(docheck_all,120)
+#schedule.every(24).hours.do(docheck_all,120)
+schedule.every(7).days.do(docheck_all,120)
 
 url = SLACK_HOOK
 data = { "text": 'bot started' }

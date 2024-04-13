@@ -54,7 +54,7 @@ os.environ['TZ'] = 'America/Los_Angeles'
 cursorObj = con.cursor()
 
 
-def docheck():
+def docheck_reps():
   logging.info("running check on reps")
   con.ping(reconnect=True)
   cursorObj.execute('SELECT * FROM rep_posts WHERE  posttime >  ' +  str( int(time.time()) - (86400 * 90)  ) + " AND reported = 0" )
@@ -159,9 +159,15 @@ def docheck_1h():
 
 
 schedule.every(10).minutes.do(docheck_1h)
-schedule.every(6).hours.do(docheck)
-schedule.every(24).hours.do(docheck_all,30)
-schedule.every(7).days.do(docheck_all,120)
+
+schedule.every().day().at("00:00").do(docheck_reps)
+schedule.every().day().at("06:00").do(docheck_reps)
+schedule.every().day().at("12:00").do(docheck_reps)
+schedule.every().day().at("18:00").do(docheck_reps)
+
+schedule.every().day().at("00:00").do(docheck_all,30)
+
+schedule.every().sunday().at("06:00").do(docheck_all,120)
 
 url = SLACK_HOOK
 data = { "text": 'bot started' }

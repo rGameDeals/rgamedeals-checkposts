@@ -12,8 +12,8 @@ import schedule
 import pymysql
 
 from slack_sdk import WebClient
-client = WebClient()
-api_response = client.api_test()
+slack_client = WebClient()
+#api_response = client.api_test()
 
 
 

@@ -5,3 +5,4 @@ dateparser
 pyyaml
 pymysql
 slackclient
+slack_sdk

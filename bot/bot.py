@@ -12,7 +12,6 @@ import schedule
 import pymysql
 
 from slack_sdk import WebClient
-slack_client = WebClient()
 #api_response = client.api_test()
 
 
@@ -35,6 +34,7 @@ SLACK_HOOK= os.environ['SLACK_HOOK']
 
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 
+slack_client = WebClient( token=SLACK_BOT_TOKEN )
 
 AGENT="python:CheckPostsBot:0.1 (by dgc1980)"
 

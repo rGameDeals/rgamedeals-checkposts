@@ -62,6 +62,17 @@ os.environ['TZ'] = 'America/Los_Angeles'
 
 cursorObj = con.cursor()
 
+def send_slack(message):
+  try:
+    response = slack_client.chat_postMessage(
+        channel="G018G7ZGQJH",
+        text=message
+    )
+  except SlackApiError as e:
+    # You will get a SlackApiError if "ok" is False
+    logging.info( e.response["error"])
+
+
 
 def docheck_reps():
   logging.info("running check on reps")
@@ -85,8 +96,7 @@ def docheck_reps():
         url = SLACK_HOOK
         r = requests.post(url, json=data)
 
-        slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
-        slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+        send_slack( 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] )
 
 
         logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
@@ -130,8 +140,7 @@ def docheck_all(days):
             r = requests.post(url, json=data)
             logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
-            slack_message = '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]
-            slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+            send_slack( '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5] )
   
             cursorObj.execute('UPDATE all_posts SET reported = 1 WHERE postid = %s', ( row[2]) )
             con.commit()
@@ -162,8 +171,7 @@ def docheck_1h():
            r = requests.post(url, json=data)
            logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
-           slack_message = '(1hr) `all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]
-           slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+           send_slack( '(1hr) `all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5] )
 
            cursorObj.execute('UPDATE all_posts SET reported = 1 WHERE postid = %s', ( row[2]) )
            con.commit()
@@ -184,8 +192,8 @@ schedule.every().day.at("00:00").do(docheck_all,30)
 
 schedule.every().sunday.at("06:00").do(docheck_all,120)
 
-slack_message = 'post check bot started'
-slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+send_slack('post check bot started')
+
 #url = SLACK_HOOK
 #data = { "text": 'bot started' }
 #r = requests.post(url, json=data)

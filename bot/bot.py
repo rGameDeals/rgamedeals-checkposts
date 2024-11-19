@@ -10,7 +10,13 @@ import datetime
 import yaml
 import schedule
 import pymysql
-from slack import WebClient
+
+from slack_sdk import WebClient
+client = WebClient()
+api_response = client.api_test()
+
+
+
 
 con = pymysql.connect(
     host=os.environ['MYSQL_HOST'],
@@ -26,6 +32,9 @@ REDDIT_PASS = os.environ['REDDIT_PASS']
 REDDIT_SUBREDDIT= os.environ['REDDIT_SUBREDDIT']
 
 SLACK_HOOK= os.environ['SLACK_HOOK']
+
+SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
+
 
 AGENT="python:CheckPostsBot:0.1 (by dgc1980)"
 
@@ -76,8 +85,8 @@ def docheck_reps():
         url = SLACK_HOOK
         r = requests.post(url, json=data)
 
-        #slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
-        #slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+        slack_message = 'post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5]
+        slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
 
 
         logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
@@ -87,6 +96,7 @@ def docheck_reps():
    except:
     logging.info("error in check")
     time.sleep(1)
+  #conn.close()
   logging.info("done check on reps")
 
 def docheck_all(days):
@@ -120,6 +130,8 @@ def docheck_all(days):
             r = requests.post(url, json=data)
             logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
+            slack_message = '`all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]
+            slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
   
             cursorObj.execute('UPDATE all_posts SET reported = 1 WHERE postid = %s', ( row[2]) )
             con.commit()
@@ -150,6 +162,9 @@ def docheck_1h():
            r = requests.post(url, json=data)
            logging.info( "*** " + row[2] + " has been removed by /u/" + row[5] )
 
+           slack_message = '(1hr) `all` post https://redd.it/' + row[2] + '/ has been deleted by https://reddit.com/u/' + row[5] + "  there have been " + str(rowa[0][0]+1) + " submissions deleted - https://deleted.coolify.rgamedeals.net/?name=" + row[5]
+           slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+
            cursorObj.execute('UPDATE all_posts SET reported = 1 WHERE postid = %s', ( row[2]) )
            con.commit()
     except:
@@ -169,9 +184,11 @@ schedule.every().day.at("00:00").do(docheck_all,30)
 
 schedule.every().sunday.at("06:00").do(docheck_all,120)
 
-url = SLACK_HOOK
-data = { "text": 'bot started' }
-r = requests.post(url, json=data)
+slack_message = 'post check bot started'
+slack_client.api_call("chat.postMessage", channel='#mod-bots',  text=slack_message)
+#url = SLACK_HOOK
+#data = { "text": 'bot started' }
+#r = requests.post(url, json=data)
 docheck_all(30)
 
 while 1:

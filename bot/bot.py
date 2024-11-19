@@ -63,14 +63,10 @@ os.environ['TZ'] = 'America/Los_Angeles'
 cursorObj = con.cursor()
 
 def send_slack(message):
-  try:
     response = slack_client.chat_postMessage(
-        channel="G018G7ZGQJH",
+        channel=os.environ["SLACK_CHANNEL"],
         text=message
     )
-  except SlackApiError as e:
-    # You will get a SlackApiError if "ok" is False
-    logging.info( e.response["error"])
 
 
 

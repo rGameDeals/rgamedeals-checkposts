@@ -166,15 +166,14 @@ def docheck_1h():
   logging.info("done small check")
 
 
-schedule.every(10).minutes.do(docheck_1h)
+#schedule.every(10).minutes.do(docheck_1h)
 
-schedule.every().day.at("00:00").do(docheck_reps)
-schedule.every().day.at("06:00").do(docheck_reps)
-schedule.every().day.at("12:00").do(docheck_reps)
-schedule.every().day.at("18:00").do(docheck_reps)
+#schedule.every().day.at("00:00").do(docheck_reps)
+#schedule.every().day.at("06:00").do(docheck_reps)
+#schedule.every().day.at("12:00").do(docheck_reps)
 
-schedule.every().day.at("00:00").do(docheck_all,30)
-
+schedule.every().sunday.at("0:00").do(docheck_reps)
+schedule.every().day.at("01:00").do(docheck_all,7)
 schedule.every().sunday.at("06:00").do(docheck_all,120)
 
 send_slack('post check bot started')

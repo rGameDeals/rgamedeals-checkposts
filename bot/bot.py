@@ -172,7 +172,7 @@ def docheck_1h():
 #schedule.every().day.at("06:00").do(docheck_reps)
 #schedule.every().day.at("12:00").do(docheck_reps)
 
-schedule.every().sunday.at("1:00").do(docheck_reps)
+schedule.every().sunday.at("01:00").do(docheck_reps)
 schedule.every().day.at("02:00").do(docheck_all,7)
 schedule.every().sunday.at("06:00").do(docheck_all,120)
 
